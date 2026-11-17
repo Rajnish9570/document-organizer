@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golden Vault | Document Organiser</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+:root {
+    --gold: #d6a83e;
+    --gold-light: #f9e5a7;
+    --pink: #d63384;
+    --pink-dark: #a91b61;
+    --cream: #fff9e9;
+    --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg,#e7c36b,#f8e7b5,#d9ae50);
+    color: var(--pink);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar {
+    background: rgba(255,249,233,.95);
+    border-bottom: 2px solid var(--gold);
+    padding: 15px 25px;
+}
+
+.brand {
+    color: var(--pink-dark);
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.brand span { color: var(--gold); }
+
+.container-main {
+    max-width: 1250px;
+    margin: 35px auto;
+    padding: 0 18px;
+}
+
+.hero {
+    background: linear-gradient(120deg,#fff8df,#fff0f6);
+    border: 2px solid #d8af52;
+    border-radius: 22px;
+    padding: 30px;
+    box-shadow: 0 8px 25px #805b2220;
+}
+
+.hero h1 {
+    color: var(--pink-dark);
+    font-weight: 800;
+}
+
+.hero p { color: #a64c76; }
+
+.stat-card {
+    background: var(--cream);
+    border: 1px solid var(--gold);
+    border-radius: 17px;
+    padding: 20px;
+    height: 100%;
+}
+
+.stat-card i {
+    font-size: 27px;
+    color: var(--pink);
+}
+
+.stat-card h3 {
+    font-weight: 800;
+    color: var(--pink-dark);
+    margin-top: 10px;
+}
+
+.section-title {
+    font-weight: 800;
+    color: var(--pink-dark);
+}
+
+.btn-pink {
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+}
+
+.btn-pink:hover {
+    background: var(--pink-dark);
+    color: white;
+}
+
+.btn-gold {
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+.search-box, .form-control, .form-select {
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 11px;
+}
+
+.search-box:focus, .form-control:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px #d6338420;
+}
+
+.document-card {
+    background: var(--cream);
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    overflow: hidden;
+    height: 100%;
+    transition: .25s;
+}
+
+.document-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px #79511d30;
+}
+
+.doc-preview {
+    height: 155px;
+    background: #f8e9bd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.doc-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pdf-icon {
+    font-size: 65px;
+    color: var(--pink);
+}
+
+.doc-info { padding: 14px; }
+
+.doc-name {
+    font-weight: 700;
+    color: var(--pink-dark);
+    overflow-wrap: anywhere;
+}
+
+.doc-meta {
+    font-size: 12px;
+    color: #a66b84;
+}
+
+.empty {
+    text-align: center;
+    background: var(--cream);
+    border: 2px dashed var(--gold);
+    padding: 50px 15px;
+    border-radius: 20px;
+    color: var(--pink);
+}
+
+.empty i { font-size: 55px; }
+
+.modal-content {
+    background: var(--cream);
+    border: 2px solid var(--gold);
+    border-radius: 17px;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--gold);
+    color: var(--pink-dark);
+}
+
+#previewContent {
+    height: 75vh;
+    background: #f5e8c9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+#previewContent img {
+    max-width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+}
+
+#previewContent iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: var(--pink-dark);
+}
+
+.drop-area {
+    border: 2px dashed var(--gold);
+    padding: 24px;
+    text-align: center;
+    border-radius: 15px;
+    background: #fff5dd;
+}
+
+@media(max-width:576px) {
+    .hero { padding: 22px; }
+    .brand { font-size: 20px; }
+    .container-main { margin-top: 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="container-fluid">
+        <div class="brand">
+            <i class="bi bi-gem"></i>
+            Golden <span>Vault</span>
+        </div>
+        <span class="small fw-bold">
+            <i class="bi bi-shield-lock"></i> Private Storage
+        </span>
+    </div>
+</nav>
+
+<main class="container-main">
+
+    <!-- HERO -->
+    <section class="hero mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1>My Document Space ✨</h1>
+                <p class="mb-3">
+                    Your personal place for storing, viewing
+                    and organising important documents.
+                </p>
+                <button class="btn btn-pink" onclick="openUpload()">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    Add Documents
+                </button>
+            </div>
+            <div class="col-md-4 text-center mt-3 mt-md-0">
+                <i class="bi bi-folder2-open"
+                   style="font-size:90px;color:#d63384"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4">
+            <div class="stat-card">
+                <i class="bi bi-files"></i>
+                <h3 id="totalDocs">0</h3>
+                <small>Total Documents</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="stat-card">
+                <i class="bi bi-file-earmark-pdf"></i>
+                <h3 id="totalPDF">0</h3>
+                <small>PDF Files</small>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="stat-card">
+                <i class="bi bi-images"></i>
+                <h3 id="totalImages">0</h3>
+                <small>Image Files</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <section id="uploadSection" class="hero mb-4" hidden>
+        <h4 class="section-title mb-3">
+            <i class="bi bi-cloud-plus"></i> Add New Documents
+        </h4>
+
+        <div class="drop-area mb-3">
+            <i class="bi bi-file-earmark-arrow-up fs-1"></i>
+            <p class="fw-bold mt-2">Select your documents</p>
+            <input type="file" id="fileInput"
+                   class="form-control"
+                   accept=".pdf,image/jpeg,image/png,image/webp"
+                   multiple>
+            <small>PDF, JPG, PNG, WEBP supported</small>
+        </div>
+
+        <label class="form-label fw-bold">Folder Name</label>
+        <input type="text" id="folderInput"
+               class="form-control mb-3"
+               placeholder="Example: Personal Documents">
+
+        <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-pink" onclick="saveFiles()">
+                <i class="bi bi-save"></i> Save Documents
+            </button>
+            <button class="btn btn-outline-secondary"
+                    onclick="closeUpload()">Cancel</button>
+        </div>
+        <p id="uploadStatus" class="mt-2 small"></p>
+    </section>
+
+    <!-- LIBRARY -->
+    <section>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h4 class="section-title mb-0">
+                <i class="bi bi-collection"></i> My Library
+            </h4>
+            <button class="btn btn-gold" onclick="openUpload()">
+                <i class="bi bi-plus-lg"></i> Add New
+            </button>
+        </div>
+
+        <div class="row g-2 mb-4">
+            <div class="col-md-7">
+                <input id="searchInput" class="form-control"
+                       placeholder="🔍 Search documents..."
+                       oninput="renderDocuments()">
+            </div>
+            <div class="col-md-5">
+                <select id="folderFilter" class="form-select"
+                        onchange="renderDocuments()">
+                    <option value="all">All Folders</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="documentGrid" class="row g-3"></div>
+    </section>
+
+</main>
+
+<footer>
+    <i class="bi bi-gem"></i>
+    Golden Vault | Your Documents, Your Privacy
+    <p class="small mb-0">Stored locally on your device</p>
+</footer>
+
+<!-- PREVIEW MODAL -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewTitle">Document Viewer</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div id="previewContent"></div>
+            <div class="modal-footer">
+                <button class="btn btn-pink" id="downloadPreview">
+                    <i class="bi bi-download"></i> Download
+                </button>
+                <button class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ==================================
+   DATABASE - INDEXED DB
+================================== */
+
+const DB_NAME = "GoldenVaultDB";
+const STORE_NAME = "documents";
+
+let db;
+let documents = [];
+let previewURL = null;
+
+function openDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+
+        request.onupgradeneeded = e => {
+            const database = e.target.result;
+
+            if (!database.objectStoreNames.contains(STORE_NAME)) {
+                const store = database.createObjectStore(
+                    STORE_NAME, { keyPath: "id" }
+                );
+                store.createIndex("folder", "folder");
+            }
+        };
+
+        request.onsuccess = e => resolve(e.target.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function transaction(mode = "readonly") {
+    return db.transaction(STORE_NAME, mode)
+             .objectStore(STORE_NAME);
+}
+
+function getAllDocuments() {
+    return new Promise((resolve, reject) => {
+        const request = transaction().getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function saveDocument(doc) {
+    return new Promise((resolve, reject) => {
+        const request = transaction("readwrite").put(doc);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function removeDocument(id) {
+    return new Promise((resolve, reject) => {
+        const request = transaction("readwrite").delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+/* ==================================
+   UPLOAD FUNCTIONS
+================================== */
+
+function openUpload() {
+    document.getElementById("uploadSection").hidden = false;
+    document.getElementById("uploadSection")
+            .scrollIntoView({behavior:"smooth"});
+}
+
+function closeUpload() {
+    document.getElementById("uploadSection").hidden = true;
+}
+
+async function saveFiles() {
+    const input = document.getElementById("fileInput");
+    const folder = document.getElementById("folderInput")
+                         .value.trim() || "General";
+
+    const files = Array.from(input.files);
+    const status = document.getElementById("uploadStatus");
+
+    if (!files.length) {
+        status.innerText = "Please select at least one file.";
+        return;
+    }
+
+    status.innerText = "Saving documents...";
+
+    try {
+        for (const file of files) {
+
+            const isPDF = file.type === "application/pdf";
+            const isImage = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ].includes(file.type);
+
+            if (!isPDF && !isImage) continue;
+
+            const doc = {
+                id: crypto.randomUUID(),
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                folder: folder,
+                date: new Date().toISOString(),
+                blob: file
+            };
+
+            await saveDocument(doc);
+        }
+
+        input.value = "";
+        document.getElementById("folderInput").value = "";
+        status.innerText = "Documents saved successfully! ✨";
+
+        await loadDocuments();
+
+        setTimeout(closeUpload, 900);
+
+    } catch(error) {
+        console.error(error);
+        status.innerText =
+            "Storage failed. Check available browser storage.";
+    }
+}
+
+/* ==================================
+   LOAD DOCUMENTS
+================================== */
+
+async function loadDocuments() {
+    documents = await getAllDocuments();
+    updateStats();
+    updateFolders();
+    renderDocuments();
+}
+
+function updateStats() {
+    document.getElementById("totalDocs").innerText =
+        documents.length;
+
+    document.getElementById("totalPDF").innerText =
+        documents.filter(d => d.type === "application/pdf").length;
+
+    document.getElementById("totalImages").innerText =
+        documents.filter(d => d.type.startsWith("image/")).length;
+}
+
+/* ==================================
+   FOLDER FILTER
+================================== */
+
+function updateFolders() {
+    const select = document.getElementById("folderFilter");
+    const previous = select.value;
+
+    const folders = [...new Set(
+        documents.map(d => d.folder)
+    )].sort();
+
+    select.innerHTML = '<option value="all">All Folders</option>';
+
+    folders.forEach(folder => {
+        const option = document.createElement("option");
+        option.value = folder;
+        option.textContent = folder;
+        select.appendChild(option);
+    });
+
+    select.value = folders.includes(previous) ? previous : "all";
+}
+
+/* ==================================
+   DISPLAY DOCUMENTS
+================================== */
+
+function renderDocuments() {
+    const grid = document.getElementById("documentGrid");
+    const search = document.getElementById("searchInput")
+                         .value.toLowerCase();
+    const folder = document.getElementById("folderFilter").value;
+
+    grid.innerHTML = "";
+
+    const filtered = documents.filter(doc => {
+        const matchesName = doc.name.toLowerCase().includes(search);
+        const matchesFolder = folder === "all" ||
+                              doc.folder === folder;
+
+        return matchesName && matchesFolder;
+    });
+
+    if (!filtered.length) {
+        grid.innerHTML = `
+        <div class="col-12">
+            <div class="empty">
+                <i class="bi bi-folder-x"></i>
+                <h5 class="mt-3 fw-bold">No Documents Found</h5>
+                <p>Upload your first document to get started.</p>
+            </div>
+        </div>`;
+        return;
+    }
+
+    filtered.forEach(doc => {
+
+        const isImage = doc.type.startsWith("image/");
+        const url = URL.createObjectURL(doc.blob);
+
+        const card = document.createElement("div");
+        card.className = "col-6 col-md-4 col-lg-3";
+
+        const preview = document.createElement("div");
+        preview.className = "doc-preview";
+
+        if (isImage) {
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = doc.name;
+            preview.appendChild(img);
+        } else {
+            const icon = document.createElement("i");
+            icon.className = "bi bi-file-earmark-pdf pdf-icon";
+            preview.appendChild(icon);
+        }
+
+        const info = document.createElement("div");
+        info.className = "doc-info";
+
+        const name = document.createElement("div");
+        name.className = "doc-name";
+        name.textContent = doc.name;
+
+        const meta = document.createElement("div");
+        meta.className = "doc-meta mt-2";
+        meta.textContent =
+            doc.folder + " • " + formatSize(doc.size);
+
+        const actions = document.createElement("div");
+        actions.className = "d-flex gap-2 mt-3";
+
+        const view = document.createElement("button");
+        view.className = "btn btn-pink btn-sm flex-fill";
+        view.innerHTML = '<i class="bi bi-eye"></i>';
+        view.title = "View document";
+        view.onclick = () => openPreview(doc.id);
+
+        const menu = document.createElement("div");
+        menu.className = "dropdown";
+
+        const menuButton = document.createElement("button");
+        menuButton.className = "btn btn-gold btn-sm dropdown-toggle";
+        menuButton.setAttribute("data-bs-toggle","dropdown");
+        menuButton.innerHTML = '<i class="bi bi-three-dots"></i>';
+
+        const menuList = document.createElement("ul");
+        menuList.className = "dropdown-menu";
+
+        const actionsList = [
+            ["Rename", () => renameDoc(doc.id)],
+            ["Download", () => downloadDoc(doc.id)],
+            ["Delete", () => deleteDoc(doc.id)]
+        ];
+
+        actionsList.forEach(([label, action]) => {
+            const li = document.createElement("li");
+            const button = document.createElement("button");
+            button.className = "dropdown-item";
+            button.textContent = label;
+            button.onclick = action;
+            li.appendChild(button);
+            menuList.appendChild(li);
+        });
+
+        menu.append(menuButton, menuList);
+        actions.append(view, menu);
+
+        info.append(name, meta, actions);
+        card.append(preview, info);
+        grid.appendChild(card);
+    });
+}
+
+function formatSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1048576)
+        return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / 1048576).toFixed(2) + " MB";
+}
+
+/* ==================================
+   DOCUMENT VIEWER
+================================== */
+
+function openPreview(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    if (previewURL) URL.revokeObjectURL(previewURL);
+    previewURL = URL.createObjectURL(doc.blob);
+
+    document.getElementById("previewTitle").textContent = doc.name;
+
+    const content = document.getElementById("previewContent");
+    content.innerHTML = "";
+
+    if (doc.type === "application/pdf") {
+        const iframe = document.createElement("iframe");
+        iframe.src = previewURL;
+        iframe.title = doc.name;
+        content.appendChild(iframe);
+    } else {
+        const img = document.createElement("img");
+        img.src = previewURL;
+        img.alt = doc.name;
+        content.appendChild(img);
+    }
+
+    document.getElementById("downloadPreview").onclick =
+        () => downloadDoc(id);
+
+    bootstrap.Modal.getOrCreateInstance(
+        document.getElementById("previewModal")
+    ).show();
+}
+
+document.getElementById("previewModal")
+    .addEventListener("hidden.bs.modal", () => {
+        if (previewURL) {
+            URL.revokeObjectURL(previewURL);
+            previewURL = null;
+        }
+        document.getElementById("previewContent").innerHTML = "";
+    });
+
+/* ==================================
+   DOWNLOAD
+================================== */
+
+function downloadDoc(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    const url = URL.createObjectURL(doc.blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = doc.name;
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ==================================
+   RENAME
+================================== */
+
+async function renameDoc(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    const name = prompt("Enter new document name:", doc.name);
+
+    if (!name || !name.trim()) return;
+
+    doc.name = name.trim();
+    await saveDocument(doc);
+    await loadDocuments();
+}
+
+/* ==================================
+   DELETE
+================================== */
+
+async function deleteDoc(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    if (!confirm("Are you sure you want to delete " + doc.name + "?"))
+        return;
+
+    await removeDocument(id);
+    await loadDocuments();
+}
+
+/* ==================================
+   INITIALIZE
+================================== */
+
+(async function init() {
+    try {
+        db = await openDatabase();
+        await loadDocuments();
+    } catch(error) {
+        console.error(error);
+        alert("Unable to open local database. Please use a modern browser.");
+    }
+})();
+</script>
+
+</body>
+</html>
